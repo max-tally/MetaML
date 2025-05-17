@@ -69,9 +69,7 @@ def runSmoking():
     print(f"Using device: {device}")
     ms = pd.read_csv("H:/My Drive/Data/classifier/ms8k_smoke.csv", encoding='cp1252',index_col=0)
     meta = pd.read_csv("H:/My Drive/Data/classifier/meta.csv", encoding='cp1252',index_col=0)
-    #smokers = meta2[meta2['smoke'] == 0].index.tolist()
-    #nonsmokers = meta2[meta2['smoke'] == 1].index.tolist()
-    #even = nonsmokers[0:len(smokers)] + smokers
+
     cors = ms.apply(lambda col: np.corrcoef(col, meta['smoke'])[0, 1])
     ms = ms.iloc[:,np.argsort(abs(cors))[::-1]].iloc[:, 0:10000]
 
@@ -657,16 +655,16 @@ def runAgeHuge():
     dataset = CSVDataset("H:/My Drive/Data/classifier/ms8k_211k.csv", "H:/My Drive/Data/classifier/meta.csv", "age")
     # Initialize the k-fold cross validation
     model = nn.Sequential(
-        nn.Linear(len(dataset.fheader)-1, 200),
+        nn.Linear(len(dataset.fheader)-1, 500),
         nn.ReLU(),
-        nn.Linear(200, 500),
+        nn.Linear(500, 500),
         nn.ReLU(),
         nn.Linear(500, 500),
         nn.ReLU(),
         nn.Linear(500, 1)
     )
     model = model.float().to(device)
-    optimizer = optim.Adam(model.parameters(), lr=1e-6)
+    optimizer = optim.Adam(model.parameters(), lr=5e-7)
     # class_weights = torch.tensor([0.9,0.1])
     # criterion = WeightedMSELoss()
     criterion = nn.MSELoss()
